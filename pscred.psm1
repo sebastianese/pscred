@@ -1,6 +1,18 @@
 $ErrorActionPreference = "SilentlyContinue"
  #Encrypt Pass
  function Set-Pass{
+<# 
+    .Synopsis 
+Set-Pass Saves a new password. Optionally a description can be added 
+   
+ 
+    .DESCRIPTION 
+Set-Pass saves a new password with an optional description. The passwords are stored ecrypted using 
+PowerShell's ConvertTo-SecureString cmdlet and can only be de-crypted by the same computer and user account that encrypted them.  
+    
+    .EXAMPLE 
+Set-Pass -Name <Name> -Description <Description>
+#> 
   Param(
    [Parameter(Mandatory=$True, ValueFromPipeline=$true)]
    [string]$Name,
@@ -27,6 +39,19 @@ Write-Host "Secret: $Name was encrypted and saved!" -ForegroundColor Green
  }
  #Decrypt Pass
 function Get-Pass{
+<# 
+    .Synopsis 
+Get-Pass Gets the value of a stored password and places it on the clipboard 
+   
+ 
+    .DESCRIPTION 
+Get-Pass Gets the value of a stored password and places it on the clipboard
+TIP: It can be piped to Get-Clipboard to pass the password to a script
+Ex: $MyPass = Get-Pass server1 | Get-Clipboard 
+    
+    .EXAMPLE 
+Get-Pass -Name <Name>
+#> 
  Param(
    [Parameter(Mandatory=$True, ValueFromPipeline=$true)]
    [string]$Name
@@ -50,6 +75,17 @@ Set-Clipboard $Token_clear
 }
 #List Secrets
 function Get-PassList{
+   <# 
+    .Synopsis 
+Get-PassList gets a list of all stored passwords
+   
+ 
+    .DESCRIPTION 
+Get-PassList gets a list of all stored passwords and their description 
+    
+    .EXAMPLE 
+    Get-PassList
+#> 
 if ($PSVersionTable.PSEdition -eq "Core"){
 $HashPath = "$env:HOME\pscred"
 } 
@@ -75,6 +111,17 @@ $CredHashlist
 }
 #Remove Pass
 function Remove-Pass{
+<# 
+    .Synopsis 
+   Remove-Pass removes a stored password
+   
+ 
+    .DESCRIPTION 
+   Remove-Pass removes a stored password (can not be reverted)
+    
+    .EXAMPLE 
+    Remove-Pass -Name <Name>
+#> 
  Param(
    [Parameter(Mandatory=$True, ValueFromPipeline=$true)]
    [string]$Name
@@ -96,6 +143,19 @@ Write-Host "secret: $Name was removed" -ForegroundColor Green
 }
 #Export secrets so they can be transferred and decrypted on a different system
 function Export-Pass{
+<# 
+    .Synopsis 
+Export-Pass creates a folder with all passwords (encrypted hashes) that can be imported on a different system. 
+   
+   
+ 
+    .DESCRIPTION 
+Export-Pass creates a folder with all passwords (encrypted hashes) that can be imported on a different system.
+An 8 digit PIN will be requested and the same PIN will be needed to import the passwords to the new system
+    
+    .EXAMPLE 
+Export-Pass 
+#> 
 if ($PSVersionTable.PSEdition -eq "Core"){
 $HashPath = "$env:HOME\pscred"
 $ExportPath = "$env:HOME\pscred\pscredexport"
@@ -147,6 +207,19 @@ Write-host "Then install pscred and run Import-Pass" -ForegroundColor Green
 }
 #Import exported secrets from another system
 function Import-Pass{
+<# 
+    .Synopsis 
+Import-Pass imports the passwords exported from a different system 
+   
+   
+ 
+    .DESCRIPTION 
+Import-Pass imports the passwords exported from a different system 
+An 8 digit PIN will be requested (this is the same PIN used when running the Export-Pass command on the source system)
+    
+    .EXAMPLE 
+Import-Pass 
+#> 
 if ($PSVersionTable.PSEdition -eq "Core"){
 $HashPath = "$env:HOME\pscred"
 } 
