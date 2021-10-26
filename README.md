@@ -1,10 +1,16 @@
 # PScred
 
-PScred is a simple password manager built in powershell. 
+PScred is a simple password manager built in PowerShell. 
 The passwords are stored ecrypted using PowerShell's ConvertTo-SecureString cmdlet 
 and can only be decrypted by the same computer and user account that encrypted them.
 
-You can use pscred to pass password to scripts
+You can use pscred to get a saved password and place it on the clipboard
+ex: 
+```powershell
+Get-Pass -Name mypass  
+```
+
+Or you can use pscred to pass password to scripts
 ex: 
 ```powershell
 $Credential = Get-Pass -Name mypass  | Get-Clipboard
