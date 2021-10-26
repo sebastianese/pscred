@@ -19,7 +19,7 @@ Set-Pass -Name <Name> -Description <Description>
    [string]$Description
 
    )
-if ($PSVersionTable.PSEdition -eq "Core"){
+if ($PSVersionTable.Platform -eq "Unix"){
 $HashPath = "$env:HOME\pscred"
 } 
    
@@ -55,7 +55,7 @@ Get-Pass -Name <Name>
    [Parameter(Mandatory=$True, ValueFromPipeline=$true)]
    [string]$Name
    )
-if ($PSVersionTable.PSEdition -eq "Core"){
+if ($PSVersionTable.Platform -eq "Unix"){
 $HashPath = "$env:HOME\pscred"
 } 
    
@@ -85,7 +85,7 @@ Get-PassList gets a list of all stored passwords and their description
     .EXAMPLE 
     Get-PassList
 #> 
-if ($PSVersionTable.PSEdition -eq "Core"){
+if ($PSVersionTable.Platform -eq "Unix"){
 $HashPath = "$env:HOME\pscred"
 } 
    
@@ -132,7 +132,7 @@ function Remove-Pass{
    [Parameter(Mandatory=$True, ValueFromPipeline=$true)]
    [string]$Name
    )
-if ($PSVersionTable.PSEdition -eq "Core"){
+if ($PSVersionTable.Platform -eq "Unix"){
 $HashPath = "$env:HOME\pscred"
 } 
 else {$HashPath = "$env:USERPROFILE\Documents\pscred"}      
@@ -162,7 +162,7 @@ An 8 digit PIN will be requested and the same PIN will be needed to import the p
     .EXAMPLE 
 Export-Pass 
 #> 
-if ($PSVersionTable.PSEdition -eq "Core"){
+if ($PSVersionTable.Platform -eq "Unix"){
 $HashPath = "$env:HOME\pscred"
 $ExportPath = "$env:HOME\pscred\pscredexport"
 } 
@@ -225,7 +225,7 @@ An 8 digit PIN will be requested (this is the same PIN used when running the Exp
     .EXAMPLE 
 Import-Pass 
 #> 
-if ($PSVersionTable.PSEdition -eq "Core"){
+if ($PSVersionTable.Platform -eq "Unix"){
 $HashPath = "$env:HOME\pscred"
 } 
 else {$HashPath = "$env:USERPROFILE\Documents\pscred"
