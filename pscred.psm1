@@ -1,5 +1,4 @@
 $ErrorActionPreference = "SilentlyContinue"
- #Encrypt Pass
  function Set-Pass{
 <# 
     .Synopsis 
@@ -37,7 +36,7 @@ $json1 = $CredHash | ConvertTo-Json
 Add-Content "$HashPath\hash_$Name.json" "$json1" 
 Write-Host "Secret: $Name was encrypted and saved!" -ForegroundColor Green
  }
- #Decrypt Pass
+
 function Get-Pass{
 <# 
     .Synopsis 
@@ -73,7 +72,7 @@ $newcred = New-Object -TypeName PSCredential $in.$Name,$secure
 $Token_clear = $newcred.GetNetworkCredential().Password
 Set-Clipboard $Token_clear 
 }
-#List Secrets
+
 function Get-PassList{
    <# 
     .Synopsis 
@@ -94,9 +93,15 @@ else {$HashPath = "$env:USERPROFILE\Documents\pscred"}
 If(!(test-path "$HashPath")){
 New-Item -Path "$HashPath" -ItemType Directory
 }
-$hashes = Get-ChildItem $HashPath | Where-Object {$_.Name -like "hash*"} | Select-Object -ExpandProperty Name 
-$Hashes_clean = ($hashes).trim('hash')
-$Hashes_clean1 = ($hashes_clean).trim('_')
+$version = '
+                            __      ___ ___
+   ___  ___ ___________ ___/ / _  _<  /<  /
+  / _ \(_-</ __/ __/ -_) _  / | |/ / / / / 
+ / .__/___/\__/_/  \__/\_,_/  |___/_(_)_/  
+/_/                                        
+'
+$hashes = Get-ChildItem $HashPath | Where-Object {$_.Name -like "hash*"} | Sort-Object -Property Name | Select-Object -ExpandProperty Name 
+$Hashes_clean1 = $hashes.substring(5) 
 $creds = $Hashes_clean1 -replace ".{5}$" 
 $CredHash = @{}
 foreach ($cred in $creds){
@@ -105,11 +110,12 @@ $Description = $in.Description
 $CredHash.add( $Cred, $Description)
 }
 $CredHashList = $CredHash | convertto-json 
-Write-Host "secrets:
+Write-Host "$version
+secrets:
 $CredHashlist 
 " -ForegroundColor Green
 }
-#Remove Pass
+
 function Remove-Pass{
 <# 
     .Synopsis 
@@ -141,7 +147,7 @@ break
 Remove-Item "$HashPath\hash_$Name.json"
 Write-Host "secret: $Name was removed" -ForegroundColor Green
 }
-#Export secrets so they can be transferred and decrypted on a different system
+
 function Export-Pass{
 <# 
     .Synopsis 
@@ -185,8 +191,7 @@ break
 $creds = Get-ChildItem $HashPath | Where-Object {$_.Name -like "*.json"} | Select-Object -ExpandProperty Name
 foreach ($cred in $creds){
 $in = Get-Content -Raw $HashPath\$cred | ConvertFrom-Json
-$Hashes_clean = ($cred).trim('hash')
-$Hashes_clean1 = ($hashes_clean).trim('_')
+$Hashes_clean1 = $cred.substring(5)
 $name = $Hashes_clean1 -replace ".{5}$"
 $TokenSecure = ConvertTo-SecureString $in.$Name
 $newcred = New-Object -TypeName PSCredential $in.$Name,$TokenSecure
@@ -205,7 +210,7 @@ Write-host "Move the pscredexport folder to the target system
 pscredexport folder path: $ExportPath" -ForegroundColor Green
 Write-host "Then install pscred and run Import-Pass" -ForegroundColor Green
 }
-#Import exported secrets from another system
+
 function Import-Pass{
 <# 
     .Synopsis 
@@ -254,8 +259,7 @@ New-Item -Path "$HashPath" -ItemType Directory
 $creds = Get-ChildItem $ExportFolder | Where-Object {$_.Name -like "*.json"} | Select-Object -ExpandProperty Name
 foreach ($cred in $creds){
 $in = Get-Content -Raw $ExportFolder\$cred | ConvertFrom-Json
-$Hashes_clean = ($cred).trim('hash')
-$Hashes_clean1 = ($hashes_clean).trim('_')
+$Hashes_clean1 = $cred.substring(5)
 $name = $Hashes_clean1 -replace ".{5}$"
 $TokenSecure = ConvertTo-SecureString $in.$Name -SecureKey $Key
 $newcred = New-Object -TypeName PSCredential $in.$Name,$TokenSecure
@@ -269,6 +273,5 @@ $json1 = $CredHash | ConvertTo-Json
 Add-Content "$HashPath\hash_$Name.json" "$json1" 
 }
 Write-host "Import completed ++++++++++++++++++++++++++++++++++++" -ForegroundColor Green
-Write-host "All secrets are safe" -ForegroundColor Green
 }
 
