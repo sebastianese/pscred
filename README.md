@@ -27,7 +27,7 @@ ex:
 ```powershell
 $Credential = Get-Pass -Name mypass  | Get-Clipboard
 ```
-If you want to move passwords to a different system you can you the Export-Pass on the source system (8 digit PIN required)
+If you want to move passwords to a different system you can run Export-Pass on the source system (8 digit PIN will be requested)
 and then run Import-Pass on the target system to encrypt the secrets again with the session account. 
 
 ## Usage
