@@ -27,7 +27,11 @@ else {$HashPath = "$env:USERPROFILE\Documents\pscred"}
 If(!(test-path "$HashPath")){
 New-Item -Path "$HashPath" -ItemType Directory
 }
-$Value = Read-Host "Enter Secret" -AsSecureString
+if (test-path "$HashPath\hash_$Name.json" ){
+    Write-host "Password:$Name already exists" -ForegroundColor Red
+    break
+    }
+else {$Value = Read-Host "Enter Secret" -AsSecureString}
 $ValueSecure = $Value | ConvertFrom-SecureString
 $CredHash = @{}
 $CredHash.add( $Name, $ValueSecure )
@@ -36,6 +40,54 @@ $json1 = $CredHash | ConvertTo-Json
 Add-Content "$HashPath\hash_$Name.json" "$json1" 
 Write-Host "Secret: $Name was encrypted and saved!" -ForegroundColor Green
  }
+
+ function Set-RandomPass{
+    <# 
+        .Synopsis 
+    Set-RandomPass Saves a new password that is randomly generated (special characters included). Optionally a description can be added 
+       
+     
+        .DESCRIPTION 
+    Set-RandomPass saves a new randomly generated password with an optional description. The passwords are stored ecrypted using 
+    PowerShell's ConvertTo-SecureString cmdlet and can only be de-crypted by the same computer and user account that encrypted them.  
+        
+        .EXAMPLE 
+    Set-RandomPass -Name <Name> -Description <Description> -Length <Password Length>
+    #> 
+      Param(
+       [Parameter(Mandatory=$True, ValueFromPipeline=$true)]
+       [string]$Name,
+       [Parameter(Mandatory=$False, ValueFromPipeline=$true)]
+       [string]$Description,
+       [Parameter(Mandatory=$True, ValueFromPipeline=$true)]
+       [string]$Length
+    
+       )
+    if ($PSVersionTable.Platform -eq "Unix"){
+    $HashPath = "$env:HOME\pscred"
+    } 
+       
+    else {$HashPath = "$env:USERPROFILE\Documents\pscred"}
+    If(!(test-path "$HashPath")){
+    New-Item -Path "$HashPath" -ItemType Directory
+    }
+    if (test-path "$HashPath\hash_$Name.json" ){
+        Write-host "Password:$Name already exists" -ForegroundColor Red
+        break
+        }
+    $Pwlength = $length -1
+    $Value = New-Object -TypeName PSObject
+    $Value | Add-Member -MemberType ScriptProperty -Name "Password" -Value { ("!@#@%^&*0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".tochararray() | Sort-Object {Get-Random})[0..$Pwlength] -join '' }
+    $PwValue = ($Value.Password).Trim() 
+    $ValueSecure = ConvertTo-SecureString -String $PwValue -AsPlainText -Force | ConvertFrom-SecureString
+    $CredHash = @{}
+    $CredHash.add( $Name, $ValueSecure )
+    $CredHash.add( 'Description', $Description )
+    $json1 = $CredHash | ConvertTo-Json
+    Add-Content "$HashPath\hash_$Name.json" "$json1" 
+    Write-Host "Secret: $Name was encrypted and saved!" -ForegroundColor Green
+}
+    
 
 function Get-Pass{
 <# 
@@ -94,11 +146,12 @@ If(!(test-path "$HashPath")){
 New-Item -Path "$HashPath" -ItemType Directory
 }
 $version = '
-                            __      ___ ___
-   ___  ___ ___________ ___/ / _  _<  /<  /
-  / _ \(_-</ __/ __/ -_) _  / | |/ / / / / 
- / .__/___/\__/_/  \__/\_,_/  |___/_(_)_/  
-/_/                                        
+                            __      ___  ____
+   ___  ___ ___________ ___/ / _  _<  / |_  /
+  / _ \(_-</ __/ __/ -_) _  / | |/ / / _/_ < 
+ / .__/___/\__/_/  \__/\_,_/  |___/_(_)____/ 
+/_/                                          
+
 '
 $hashes = Get-ChildItem $HashPath | Where-Object {$_.Name -like "hash*"} | Sort-Object -Property Name | Select-Object -ExpandProperty Name 
 $Hashes_clean1 = $hashes.substring(5) 
