@@ -14,6 +14,7 @@ Install-Module -Name pscred
 You can use pscred to store a password that you create (you will be promted for the password)
 ex: 
 ```powershell
+Set-Pass mypass 
 Set-Pass -Name mypass -Description "My secret"  
 ```
 
