@@ -1,12 +1,20 @@
 # PScred
+https://www.powershellgallery.com/packages/pscred
 
 PScred is a simple password manager built in PowerShell. 
 The passwords are stored ecrypted using PowerShell's ConvertTo-SecureString cmdlet 
 and can only be decrypted by the same computer and user account that encrypted them.
 
+Install PScred directly from the Powershell Gallery 
+
+```powershell
+Install-Module -Name pscred 
+```
+
 You can use pscred to store a password that you create (you will be promted for the password)
 ex: 
 ```powershell
+Set-Pass mypass 
 Set-Pass -Name mypass -Description "My secret"  
 ```
 
