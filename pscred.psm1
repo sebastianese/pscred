@@ -146,11 +146,12 @@ If(!(test-path "$HashPath")){
 New-Item -Path "$HashPath" -ItemType Directory
 }
 $version = '
-                            __      ___  ____
-   ___  ___ ___________ ___/ / _  _<  / |_  /
-  / _ \(_-</ __/ __/ -_) _  / | |/ / / _/_ < 
- / .__/___/\__/_/  \__/\_,_/  |___/_(_)____/ 
-/_/                                          
+
+                            __      _______
+   ___  ___ ___________ ___/ / _  _<  / / /
+  / _ \(_-</ __/ __/ -_) _  / | |/ / /_  _/
+ / .__/___/\__/_/  \__/\_,_/  |___/_(_)_/  
+/_/                                        
 
 '
 $hashes = Get-ChildItem $HashPath | Where-Object {$_.Name -like "hash*"} | Sort-Object -Property Name | Select-Object -ExpandProperty Name 
