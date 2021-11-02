@@ -156,7 +156,7 @@ $version = '
 $hashes = Get-ChildItem $HashPath | Where-Object {$_.Name -like "hash*"} | Sort-Object -Property Name | Select-Object -ExpandProperty Name 
 $Hashes_clean1 = $hashes.substring(5) 
 $creds = $Hashes_clean1 -replace ".{5}$" 
-$CredHash = @{}
+$CredHash = [Ordered]@{}
 foreach ($cred in $creds){
 $in = Get-Content -Raw "$HashPath\hash_$cred.json" | ConvertFrom-Json
 $Description = $in.Description
@@ -201,19 +201,19 @@ Remove-Item "$HashPath\hash_$Name.json"
 Write-Host "secret: $Name was removed" -ForegroundColor Green
 }
 
-function Export-Pass{
+function Export-PassList{
 <# 
     .Synopsis 
-Export-Pass creates a folder with all passwords (encrypted hashes) that can be imported on a different system. 
+Export-PassList creates a folder with all passwords (encrypted hashes) that can be imported on a different system. 
    
    
  
     .DESCRIPTION 
-Export-Pass creates a folder with all passwords (encrypted hashes) that can be imported on a different system.
+Export-PassList creates a folder with all passwords (encrypted hashes) that can be imported on a different system.
 An 8 digit PIN will be requested and the same PIN will be needed to import the passwords to the new system
     
     .EXAMPLE 
-Export-Pass 
+Export-PassList 
 #> 
 if ($PSVersionTable.Platform -eq "Unix"){
 $HashPath = "$env:HOME\pscred"
@@ -261,22 +261,22 @@ Add-Content "$ExportPath\hash_$Name.json" "$json1"
 Write-host "Export completed ++++++++++++++++++++++++++++++++++++" -ForegroundColor Green
 Write-host "Move the pscredexport folder to the target system 
 pscredexport folder path: $ExportPath" -ForegroundColor Green
-Write-host "Then install pscred and run Import-Pass" -ForegroundColor Green
+Write-host "Then install pscred and run Import-PassList" -ForegroundColor Green
 }
 
-function Import-Pass{
+function Import-PassList{
 <# 
     .Synopsis 
-Import-Pass imports the passwords exported from a different system 
+Import-PassList imports the passwords exported from a different system 
    
    
  
     .DESCRIPTION 
-Import-Pass imports the passwords exported from a different system 
-An 8 digit PIN will be requested (this is the same PIN used when running the Export-Pass command on the source system)
+Import-PassList imports the passwords exported from a different system 
+An 8 digit PIN will be requested (this is the same PIN used when running the Export-PassList command on the source system)
     
     .EXAMPLE 
-Import-Pass 
+Import-PassList 
 #> 
 if ($PSVersionTable.Platform -eq "Unix"){
 $HashPath = "$env:HOME\pscred"

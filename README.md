@@ -27,8 +27,8 @@ ex:
 ```powershell
 $Credential = Get-Pass -Name mypass  | Get-Clipboard
 ```
-If you want to move passwords to a different system you can run Export-Pass on the source system (8 digit PIN will be requested)
-and then run Import-Pass on the target system to encrypt the secrets again with the session account. 
+If you want to move passwords to a different system you can run Export-PassList on the source system (8 digit PIN will be requested)
+and then run Import-PassList on the target system to encrypt the secrets again with the session account. 
 
 ## Usage
 ```powershell
@@ -52,12 +52,12 @@ Remove-Pass
 # Remove-Pass removes a stored password
 # ex: Remove-Pass -Name <Name>
 
-Export-Pass
-# Export-Pass creates a folder with all passwords (encrypted hashes) that can be imported on a different system.
+Export-PassList
+# Export-PassList creates a folder with all passwords (encrypted hashes) that can be imported on a different system.
 # An 8 digit PIN will be requested and the same PIN will be needed to import the passwords to the new system
-# ex: Export-Pass
+# ex: Export-PassList
 
-Import-Pass
-# Import-Pass imports the passwords exported from a different system 
-# An 8 digit PIN will be requested (this is the same PIN used when running the Export-Pass command on the source system)
-# ex: Import-Pass
+Import-PassList
+# Import-PassList imports the passwords exported from a different system 
+# An 8 digit PIN will be requested (this is the same PIN used when running the Export-PassList command on the source system)
+# ex: Import-PassList
